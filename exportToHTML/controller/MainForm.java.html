@@ -1,0 +1,415 @@
+<html>
+<head>
+<title>MainForm.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #629755; font-style: italic;}
+.s3 { color: #6897bb;}
+.s4 { color: #6a8759;}
+.s5 { color: #629755; font-weight: bold; font-style: italic;}
+.s6 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainForm.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">controller</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.sun.scenario.effect.InvertMask</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">javafx.collections.FXCollections</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">javafx.collections.ObservableList</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">javafx.event.ActionEvent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">javafx.fxml.FXMLLoader</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">javafx.fxml.Initializable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">javafx.scene.Node</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">javafx.scene.Parent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">javafx.scene.Scene</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">javafx.scene.control.*</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">javafx.scene.control.cell.PropertyValueFactory</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">javafx.stage.Stage</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">model.*</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.io.IOException</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.net.URL</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.Optional</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.ResourceBundle</span><span class="s0">;</span>
+
+
+
+<span class="s0">public class </span><span class="s1">MainForm </span><span class="s0">implements </span><span class="s1">Initializable {</span>
+
+    <span class="s0">public </span><span class="s1">TableView partsTable</span><span class="s0">;</span>
+
+    <span class="s0">public </span><span class="s1">TableColumn partsPartID</span><span class="s0">;</span>
+    <span class="s0">public </span><span class="s1">TableColumn partsPartName</span><span class="s0">;</span>
+    <span class="s0">public </span><span class="s1">TableColumn partsInventoryLevel</span><span class="s0">;</span>
+    <span class="s0">public </span><span class="s1">TableColumn partsPrice</span><span class="s0">;</span>
+
+    <span class="s0">public </span><span class="s1">TableView productsTable</span><span class="s0">;</span>
+    <span class="s0">public </span><span class="s1">TableColumn productsID</span><span class="s0">;</span>
+    <span class="s0">public </span><span class="s1">TableColumn productsName</span><span class="s0">;</span>
+    <span class="s0">public </span><span class="s1">TableColumn productsInventoryLevel</span><span class="s0">;</span>
+    <span class="s0">public </span><span class="s1">TableColumn productsPrice</span><span class="s0">;</span>
+
+    <span class="s0">private final </span><span class="s1">ObservableList&lt;Part&gt; allParts = FXCollections.observableArrayList()</span><span class="s0">;</span>
+
+    <span class="s0">private final </span><span class="s1">ObservableList&lt;Product&gt; allProducts = FXCollections.observableArrayList()</span><span class="s0">;</span>
+
+    <span class="s0">private final </span><span class="s1">ObservableList&lt;Part&gt; foundPart = FXCollections.observableArrayList()</span><span class="s0">;</span>
+
+
+    <span class="s0">private static boolean </span><span class="s1">firstTime = </span><span class="s0">true;</span>
+    <span class="s0">public </span><span class="s1">TextField searchPart</span><span class="s0">;</span>
+    <span class="s0">public </span><span class="s1">Button partSearchButton</span><span class="s0">;</span>
+    <span class="s0">public </span><span class="s1">TextField searchProduct</span><span class="s0">;</span>
+
+    <span class="s0">private static </span><span class="s1">Product productModify</span><span class="s0">;</span>
+
+    <span class="s0">public static </span><span class="s1">Product getSelectedProductModify(){</span>
+        <span class="s0">return </span><span class="s1">productModify</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private static </span><span class="s1">Part modifyPart</span><span class="s0">;</span>
+
+    <span class="s0">public static </span><span class="s1">Part getModifyPart(){</span>
+     <span class="s0">return </span><span class="s1">modifyPart</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">Product selectedProduct</span><span class="s0">;</span>
+
+    <span class="s0">private </span><span class="s1">Parent scene</span><span class="s0">;</span>
+
+
+
+    <span class="s2">/**Test data for the application.</span>
+     <span class="s2">*</span>
+     <span class="s2">*/</span>
+    <span class="s0">public void </span><span class="s1">addTestData() {</span>
+        <span class="s0">if </span><span class="s1">(!firstTime) {</span>
+            <span class="s0">return;</span>
+        <span class="s1">}</span>
+        <span class="s1">firstTime = </span><span class="s0">false;</span>
+
+        <span class="s1">InHouse tire = </span><span class="s0">new </span><span class="s1">InHouse(</span><span class="s3">1</span><span class="s0">, </span><span class="s4">&quot;Tire&quot;</span><span class="s0">, </span><span class="s3">50.55</span><span class="s0">, </span><span class="s3">2</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">10</span><span class="s0">, </span><span class="s3">11</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Inventory.addPart(tire)</span><span class="s0">;</span>
+
+        <span class="s1">OutSourced wheel = </span><span class="s0">new </span><span class="s1">OutSourced(</span><span class="s3">2</span><span class="s0">, </span><span class="s4">&quot;Wheel&quot;</span><span class="s0">, </span><span class="s3">11.00</span><span class="s0">, </span><span class="s3">16</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">20</span><span class="s0">, </span><span class="s4">&quot;Super Bikes&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Inventory.addPart(wheel)</span><span class="s0">;</span>
+
+        <span class="s1">InHouse seat = </span><span class="s0">new </span><span class="s1">InHouse(</span><span class="s3">3</span><span class="s0">,</span><span class="s4">&quot;Seat&quot;</span><span class="s0">, </span><span class="s3">10.00</span><span class="s0">, </span><span class="s3">4</span><span class="s0">, </span><span class="s3">1</span><span class="s0">,</span><span class="s3">15</span><span class="s0">, </span><span class="s3">12</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Inventory.addPart(seat)</span><span class="s0">;</span>
+
+        <span class="s1">Product bike = </span><span class="s0">new </span><span class="s1">Product(</span><span class="s3">1000</span><span class="s0">, </span><span class="s4">&quot;Adventure Ebike&quot;</span><span class="s0">, </span><span class="s3">299.99</span><span class="s0">, </span><span class="s3">5</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">20</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Inventory.addProduct(bike)</span><span class="s0">;</span>
+
+        <span class="s1">Product tricycle = </span><span class="s0">new </span><span class="s1">Product(</span><span class="s3">1001</span><span class="s0">, </span><span class="s4">&quot;Radio Flyer&quot;</span><span class="s0">, </span><span class="s3">58.99</span><span class="s0">, </span><span class="s3">3</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">20</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Inventory.addProduct(tricycle)</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+
+    <span class="s2">/**Initializes and populates the table before the scenes are loaded.</span>
+     <span class="s2">*</span>
+     <span class="s2">* </span><span class="s5">@param </span><span class="s2">url</span>
+     <span class="s2">* </span><span class="s5">@param </span><span class="s2">resourceBundle</span>
+     <span class="s2">*/</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">initialize(URL url</span><span class="s0">, </span><span class="s1">ResourceBundle resourceBundle) {</span>
+
+        <span class="s6">//The Parts Table on the main form.</span>
+        <span class="s1">addTestData()</span><span class="s0">;</span>
+
+        <span class="s1">partsTable.setItems(Inventory.getAllParts())</span><span class="s0">;</span>
+
+        <span class="s1">partsPartID.setCellValueFactory(</span><span class="s0">new </span><span class="s1">PropertyValueFactory&lt;&gt;(</span><span class="s4">&quot;id&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">partsPartName.setCellValueFactory(</span><span class="s0">new </span><span class="s1">PropertyValueFactory&lt;&gt;(</span><span class="s4">&quot;name&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">partsInventoryLevel.setCellValueFactory(</span><span class="s0">new </span><span class="s1">PropertyValueFactory&lt;&gt;(</span><span class="s4">&quot;stock&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">partsPrice.setCellValueFactory(</span><span class="s0">new </span><span class="s1">PropertyValueFactory&lt;&gt;(</span><span class="s4">&quot;price&quot;</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s1">productsTable.setItems(Inventory.getAllProducts())</span><span class="s0">;</span>
+
+        <span class="s1">productsID.setCellValueFactory(</span><span class="s0">new </span><span class="s1">PropertyValueFactory&lt;&gt;(</span><span class="s4">&quot;id&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">productsName.setCellValueFactory(</span><span class="s0">new </span><span class="s1">PropertyValueFactory&lt;&gt;(</span><span class="s4">&quot;name&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">productsInventoryLevel.setCellValueFactory(</span><span class="s0">new </span><span class="s1">PropertyValueFactory&lt;&gt;(</span><span class="s4">&quot;stock&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">productsPrice.setCellValueFactory(</span><span class="s0">new </span><span class="s1">PropertyValueFactory&lt;&gt;(</span><span class="s4">&quot;price&quot;</span><span class="s1">))</span><span class="s0">;</span>
+
+
+        <span class="s1">System.out.println(</span><span class="s4">&quot;I am initialized!&quot;</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s6">//This method controls the Exit Button</span>
+    <span class="s0">public void </span><span class="s1">exit(ActionEvent actionEvent) {</span>
+        <span class="s1">Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow()</span><span class="s0">;</span>
+        <span class="s1">stage.close()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">/**This method switches to 'Add Parts Form'</span>
+     <span class="s2">*</span>
+     <span class="s2">* </span><span class="s5">@param </span><span class="s2">actionEvent</span>
+     <span class="s2">* </span><span class="s5">@throws </span><span class="s2">IOException</span>
+     <span class="s2">*/</span>
+    <span class="s0">public void </span><span class="s1">toPartForm(ActionEvent actionEvent) </span><span class="s0">throws </span><span class="s1">IOException {</span>
+        <span class="s1">System.out.println(</span><span class="s4">&quot;Add Button Was Clicked&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">Parent root = FXMLLoader.load(getClass().getResource(</span><span class="s4">&quot;/view/PartForm.fxml&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow()</span><span class="s0">;</span>
+        <span class="s1">Scene scene = </span><span class="s0">new </span><span class="s1">Scene(root</span><span class="s0">, </span><span class="s3">1000</span><span class="s0">, </span><span class="s3">400</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">stage.setTitle(</span><span class="s4">&quot;Add Parts Form&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">stage.setScene(scene)</span><span class="s0">;</span>
+        <span class="s1">stage.show()</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+
+    <span class="s2">/**This method controls the Button to get the 'Modify Part Form'</span>
+     <span class="s2">*</span>
+     <span class="s2">* RUNTIME_ERROR</span>
+     <span class="s2">* The error was occuring because I was loading the contorller incorrectly and passing the data</span>
+     <span class="s2">* incporrectly. It was fixed by watching the &quot;passing the football&quot; Webaniar.</span>
+     <span class="s2">* </span><span class="s5">@param </span><span class="s2">actionEvent</span>
+     <span class="s2">* </span><span class="s5">@throws </span><span class="s2">IOException</span>
+     <span class="s2">*/</span>
+    <span class="s0">public void </span><span class="s1">toModifyPartForm(ActionEvent actionEvent) </span><span class="s0">throws </span><span class="s1">IOException {</span>
+
+
+        <span class="s1">modifyPart = (Part) partsTable.getSelectionModel().getSelectedItem()</span><span class="s0">;</span>
+
+        <span class="s0">if</span><span class="s1">(modifyPart == </span><span class="s0">null</span><span class="s1">){</span>
+            <span class="s1">Alert alert = </span><span class="s0">new </span><span class="s1">Alert(Alert.AlertType.ERROR)</span><span class="s0">;</span>
+            <span class="s1">alert.setContentText(</span><span class="s4">&quot;You must select a part first before you can modify it.&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">alert.showAndWait()</span><span class="s0">;</span>
+
+            <span class="s0">return;</span>
+        <span class="s1">}</span>
+
+
+
+        <span class="s1">System.out.println(</span><span class="s4">&quot;Modify Part Button Was Clicked&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Parent root = FXMLLoader.load(getClass().getResource(</span><span class="s4">&quot;/view/ModifyPartForm.fxml&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">Scene scene = </span><span class="s0">new </span><span class="s1">Scene(root)</span><span class="s0">;</span>
+        <span class="s1">Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow()</span><span class="s0">;</span>
+        <span class="s1">stage.setScene(scene)</span><span class="s0">;</span>
+        <span class="s1">stage.show()</span><span class="s0">;</span>
+
+        <span class="s1">}</span>
+
+
+    <span class="s2">/**This method controls the Button to get to the 'Add Product Form'</span>
+     <span class="s2">*</span>
+     <span class="s2">* </span><span class="s5">@param </span><span class="s2">actionEvent</span>
+     <span class="s2">* </span><span class="s5">@throws </span><span class="s2">IOException</span>
+     <span class="s2">*/</span>
+    <span class="s0">public void </span><span class="s1">toAddProductForm(ActionEvent actionEvent) </span><span class="s0">throws </span><span class="s1">IOException {</span>
+        <span class="s1">System.out.println(</span><span class="s4">&quot;Add Product Button Was Clicked!&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+
+        <span class="s1">Parent root = FXMLLoader.load(getClass().getResource(</span><span class="s4">&quot;/view/AddProductForm.fxml&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow()</span><span class="s0">;</span>
+        <span class="s1">Scene scene = </span><span class="s0">new </span><span class="s1">Scene(root</span><span class="s0">, </span><span class="s3">900</span><span class="s0">, </span><span class="s3">550</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">stage.setTitle(</span><span class="s4">&quot;Add Product Form&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">stage.setScene(scene)</span><span class="s0">;</span>
+        <span class="s1">stage.show()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">/**This method controls the Button to get to the 'Modify Product Form'</span>
+     <span class="s2">*I kept getting a RUNTIME_ERROR when attempting to pass the selected product's</span>
+     <span class="s2">* associated parts to the next scene. I watched the passing the football Webinar.</span>
+     <span class="s2">* </span><span class="s5">@param </span><span class="s2">actionEvent</span>
+     <span class="s2">* </span><span class="s5">@throws </span><span class="s2">IOException</span>
+     <span class="s2">*/</span>
+    <span class="s0">public void </span><span class="s1">toModifyProductForm(ActionEvent actionEvent) </span><span class="s0">throws </span><span class="s1">IOException {</span>
+        <span class="s1">Product productModify = (Product) productsTable.getSelectionModel().getSelectedItem()</span><span class="s0">;</span>
+        <span class="s1">System.out.println(</span><span class="s4">&quot;Modify Product Button Was Clicked&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+
+        <span class="s6">//Set the stage</span>
+        <span class="s1">Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow()</span><span class="s0">;</span>
+        <span class="s1">FXMLLoader loader = </span><span class="s0">new </span><span class="s1">FXMLLoader(getClass().getResource(</span><span class="s4">&quot;/view/ModifyProductForm.fxml&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">scene = loader.load()</span><span class="s0">;</span>
+
+
+       <span class="s6">// Get controller from scene 2</span>
+        <span class="s1">ModifyProductForm controller = loader.getController()</span><span class="s0">;</span>
+        <span class="s1">controller.modifySelectedProduct(productModify)</span><span class="s0">;</span>
+        <span class="s1">stage.setScene(</span><span class="s0">new </span><span class="s1">Scene(scene))</span><span class="s0">;</span>
+        <span class="s1">stage.show()</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s2">/**This Function deletes the selected part in the main screen.</span>
+     <span class="s2">*</span>
+     <span class="s2">* </span><span class="s5">@param </span><span class="s2">actionEvent</span>
+     <span class="s2">*/</span>
+    <span class="s0">public void </span><span class="s1">deletePart(ActionEvent actionEvent) {</span>
+
+        <span class="s1">System.out.println(</span><span class="s4">&quot;The delete button for parts was pressed.&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Part selectedPart = (Part) partsTable.getSelectionModel().getSelectedItem()</span><span class="s0">;</span>
+
+        <span class="s0">if </span><span class="s1">(selectedPart == </span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s1">Alert alert = </span><span class="s0">new </span><span class="s1">Alert(Alert.AlertType.ERROR)</span><span class="s0">;</span>
+            <span class="s1">alert.setContentText(</span><span class="s4">&quot;Warning! You have to select a part first!&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">alert.showAndWait()</span><span class="s0">;</span>
+
+            <span class="s0">return;</span>
+        <span class="s1">}</span>
+
+        <span class="s1">Alert alert = </span><span class="s0">new </span><span class="s1">Alert(Alert.AlertType.CONFIRMATION)</span><span class="s0">;</span>
+        <span class="s1">alert.setContentText(</span><span class="s4">&quot;Are you sure you want to delete the selected part?&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Optional&lt;ButtonType&gt; optional = alert.showAndWait()</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(optional.get() == ButtonType.OK) {</span>
+            <span class="s1">System.out.println(</span><span class="s4">&quot;The part&quot; </span><span class="s1">+ selectedPart + </span><span class="s4">&quot; was deleted.&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">Inventory.deletePart(selectedPart)</span><span class="s0">;</span>
+        <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+            <span class="s0">return;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s2">/**This is the function that deletes the selected Product in the main screen.</span>
+     <span class="s2">*</span>
+     <span class="s2">* </span><span class="s5">@param </span><span class="s2">actionEvent</span>
+     <span class="s2">*/</span>
+    <span class="s0">public void </span><span class="s1">deleteProduct(ActionEvent actionEvent) {</span>
+        <span class="s1">System.out.println(</span><span class="s4">&quot;The delete product was selected.&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Product selectedProduct = (Product) productsTable.getSelectionModel().getSelectedItem()</span><span class="s0">;</span>
+
+        <span class="s0">if </span><span class="s1">(selectedProduct == </span><span class="s0">null</span><span class="s1">){</span>
+             <span class="s1">Alert alert = </span><span class="s0">new </span><span class="s1">Alert(Alert.AlertType.ERROR)</span><span class="s0">;</span>
+             <span class="s1">alert.setContentText(</span><span class="s4">&quot;You must select a product first.&quot;</span><span class="s1">)</span><span class="s0">;</span>
+             <span class="s1">alert.showAndWait()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+        <span class="s1">ObservableList&lt;Part&gt; associatedParts = selectedProduct.getAllAssociatedParts()</span><span class="s0">;</span>
+        <span class="s0">if</span><span class="s1">(associatedParts.size() &gt;= </span><span class="s3">1</span><span class="s1">){</span>
+            <span class="s1">Alert alert = </span><span class="s0">new </span><span class="s1">Alert(Alert.AlertType.ERROR)</span><span class="s0">;</span>
+            <span class="s1">alert.setContentText(</span><span class="s4">&quot;Cannot delete product it has an associated part&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">alert.showAndWait()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+        <span class="s0">else</span><span class="s1">{</span>
+            <span class="s1">Alert alert = </span><span class="s0">new </span><span class="s1">Alert(Alert.AlertType.CONFIRMATION)</span><span class="s0">;</span>
+            <span class="s1">alert.setContentText(</span><span class="s4">&quot;Are you sure you want to delete this part?&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">Optional&lt;ButtonType&gt; optional = alert.showAndWait()</span><span class="s0">;</span>
+
+            <span class="s1">Inventory.deleteProduct(selectedProduct)</span><span class="s0">;</span>
+            <span class="s1">System.out.println(</span><span class="s4">&quot;The product&quot; </span><span class="s1">+ selectedProduct + </span><span class="s4">&quot; was deleted from Inventory.&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+
+    <span class="s1">}</span>
+
+    <span class="s2">/**</span>
+     <span class="s2">*This is the function for the searching parts in the text box field</span>
+     <span class="s2">* </span><span class="s5">@param </span><span class="s2">actionEvent</span>
+     <span class="s2">* An error message appears if there is no part found and returns a dialogue box</span>
+     <span class="s2">*/</span>
+    <span class="s0">public void </span><span class="s1">searchPartField(ActionEvent actionEvent) {</span>
+     <span class="s1">System.out.println(</span><span class="s4">&quot;The search field was typed in!&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">ObservableList&lt;Part&gt; allParts = Inventory.getAllParts()</span><span class="s0">;</span>
+        <span class="s1">ObservableList&lt;Part&gt; foundPart = FXCollections.observableArrayList()</span><span class="s0">;</span>
+
+        <span class="s1">String searchPartName = searchPart.getText()</span><span class="s0">;</span>
+
+
+        <span class="s0">for </span><span class="s1">(Part pa : allParts) {</span>
+            <span class="s0">if </span><span class="s1">(pa.getName().contains(searchPartName) || String.valueOf(pa.getId()).contains(searchPartName)) {</span>
+                <span class="s1">foundPart.add(pa)</span><span class="s0">;</span>
+                <span class="s1">partsTable.setItems(foundPart)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+            <span class="s0">if</span><span class="s1">(foundPart.isEmpty()) {</span>
+                <span class="s1">Alert alert = </span><span class="s0">new </span><span class="s1">Alert(Alert.AlertType.WARNING)</span><span class="s0">;</span>
+                <span class="s1">alert.setContentText(</span><span class="s4">&quot;The part you are looking for does not exist!&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">alert.showAndWait()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+
+        <span class="s0">return;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">/**This the search functionally when the user pushes a button to search for a part.</span>
+     <span class="s2">*</span>
+     <span class="s2">* </span><span class="s5">@param </span><span class="s2">actionEvent</span>
+     <span class="s2">*/</span>
+    <span class="s0">public void </span><span class="s1">searchPartButton(ActionEvent actionEvent) {</span>
+        <span class="s1">ObservableList&lt;Part&gt; allParts = Inventory.getAllParts()</span><span class="s0">;</span>
+        <span class="s1">ObservableList&lt;Part&gt; foundPart = FXCollections.observableArrayList()</span><span class="s0">;</span>
+
+        <span class="s1">String searchPartName = searchPart.getText()</span><span class="s0">;</span>
+
+
+        <span class="s0">for </span><span class="s1">(Part pa : allParts) {</span>
+            <span class="s0">if </span><span class="s1">(pa.getName().contains(searchPartName) || String.valueOf(pa.getId()).contains(searchPartName)) {</span>
+                <span class="s1">foundPart.add(pa)</span><span class="s0">;</span>
+                <span class="s1">partsTable.setItems(foundPart)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+
+            <span class="s0">if</span><span class="s1">(foundPart.isEmpty()) {</span>
+                <span class="s1">Alert alert = </span><span class="s0">new </span><span class="s1">Alert(Alert.AlertType.WARNING)</span><span class="s0">;</span>
+                <span class="s1">alert.setContentText(</span><span class="s4">&quot;The part you are looking for does not exist!&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">alert.showAndWait()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+    <span class="s1">}</span>
+
+
+    <span class="s2">/**This function allows the user to search a product by its name and product ID</span>
+     <span class="s2">*</span>
+     <span class="s2">* </span><span class="s5">@param </span><span class="s2">actionEvent</span>
+     <span class="s2">*/</span>
+    <span class="s0">public void </span><span class="s1">searchProductField(ActionEvent actionEvent) {</span>
+        <span class="s1">System.out.println(</span><span class="s4">&quot;The search field was typed in.&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">ObservableList&lt;Product&gt; allProducts = Inventory.getAllProducts()</span><span class="s0">;</span>
+        <span class="s1">ObservableList&lt;Product&gt; foundProduct = FXCollections.observableArrayList()</span><span class="s0">;</span>
+
+        <span class="s1">String searchProductName = searchProduct.getText()</span><span class="s0">;</span>
+
+        <span class="s0">for</span><span class="s1">(Product pr : allProducts){</span>
+            <span class="s0">if</span><span class="s1">(pr.getName().contains(searchProductName)|| String.valueOf(pr.getId()).contains(searchProductName)){</span>
+                <span class="s1">foundProduct.add(pr)</span><span class="s0">;</span>
+                <span class="s1">productsTable.setItems(foundProduct)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+
+        <span class="s0">if </span><span class="s1">(foundProduct.isEmpty()) {</span>
+            <span class="s1">Alert alert = </span><span class="s0">new </span><span class="s1">Alert(Alert.AlertType.WARNING)</span><span class="s0">;</span>
+            <span class="s1">alert.setContentText(</span><span class="s4">&quot;The product you are looking for cannot be found.&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">alert.showAndWait()</span><span class="s0">;</span>
+
+        <span class="s1">}</span>
+
+    <span class="s1">}</span>
+
+    <span class="s2">/**This function allows the user to search a product name or id using the button.</span>
+     <span class="s2">*</span>
+     <span class="s2">* </span><span class="s5">@param </span><span class="s2">actionEvent</span>
+     <span class="s2">*/</span>
+    <span class="s0">public void </span><span class="s1">searchProductButton(ActionEvent actionEvent) {</span>
+        <span class="s1">ObservableList&lt;Product&gt; allProducts = Inventory.getAllProducts()</span><span class="s0">;</span>
+        <span class="s1">ObservableList&lt;Product&gt; foundProduct = FXCollections.observableArrayList()</span><span class="s0">;</span>
+
+        <span class="s1">String searchProductName = searchProduct.getText()</span><span class="s0">;</span>
+
+        <span class="s0">for </span><span class="s1">(Product pr : allProducts) {</span>
+            <span class="s0">if </span><span class="s1">(pr.getName().contains(searchProductName) || String.valueOf(pr.getId()).contains(searchProductName)) {</span>
+                <span class="s1">foundProduct.add(pr)</span><span class="s0">;</span>
+                <span class="s1">productsTable.setItems(foundProduct)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+
+        <span class="s0">if </span><span class="s1">(foundProduct.isEmpty()) {</span>
+            <span class="s1">Alert alert = </span><span class="s0">new </span><span class="s1">Alert(Alert.AlertType.WARNING)</span><span class="s0">;</span>
+            <span class="s1">alert.setContentText(</span><span class="s4">&quot;The product you are looking for cannot be found.&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">alert.showAndWait()</span><span class="s0">;</span>
+
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>
